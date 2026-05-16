@@ -33,24 +33,23 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
+	stage('SonarQube Analysis') {
+		steps {
+			withSonarQubeEnv('sonarqube-server') {
 
-                withSonarQubeEnv('sonarqube-server') {
-
-                    sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                        -Dsonar.projectName="${SONAR_PROJECT_NAME}" \
-                        -Dsonar.sources=src \
-                        -Dsonar.host.url=${SONAR_HOST_URL} \
-                        -Dsonar.token=${SONAR_TOKEN} \
-                        -Dsonar.exclusions=node_modules/**,dist/** \
-                        -Dsonar.typescript.tsconfigPath=tsconfig.json
-                    '''
-                }
-            }
-        }
+        	    sh '''
+                	/opt/sonar-scanner/bin/sonar-scanner \
+                	-Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                	-Dsonar.projectName="${SONAR_PROJECT_NAME}" \
+                	-Dsonar.sources=src \
+                	-Dsonar.host.url=${SONAR_HOST_URL} \
+                	-Dsonar.token=${SONAR_TOKEN} \
+                	-Dsonar.exclusions=node_modules/**,dist/** \
+                	-Dsonar.typescript.tsconfigPath=tsconfig.json
+        	    '''
+	        }
+	    }
+	}
 
         stage('Quality Gate') {
             steps {
